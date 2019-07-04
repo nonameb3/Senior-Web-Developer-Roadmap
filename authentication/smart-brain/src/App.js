@@ -27,10 +27,10 @@ const initialState = {
   input: '',
   imageUrl: '',
   box: {},
-  // route: 'signin',
-  // isSignedIn: false,
-  route: 'home',
-  isSignedIn: true,
+  route: 'signin',
+  isSignedIn: false,
+  // route: 'home',
+  // isSignedIn: true,
   isProfileOpen: false,
   user: {
     id: '',
@@ -48,13 +48,14 @@ class App extends Component {
   }
 
   loadUser = (data) => {
+    console.log('data', data)
     this.setState({user: {
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      entries: data.entries,
-      joined: data.joined
-    }})
+      id: data.user.id,
+      name: data.user.name,
+      email: data.user.email,
+      entries: data.user.entries,
+      joined: data.user.joined
+    }},()=>console.log('fn'))
   }
 
   calculateFaceLocation = (data) => {
@@ -126,6 +127,8 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.state.user)
+
     const { isSignedIn, imageUrl, route, box, isProfileOpen } = this.state;
     return (
       <div className="App">
@@ -136,7 +139,7 @@ class App extends Component {
         {
           isProfileOpen && 
           <Model>
-            <Profile isProfileOpen={isProfileOpen} onModelToggle={this.onModelToggle}/>
+            <Profile loadUser={this.loadUser} onModelToggle={this.onModelToggle} user={this.state.user}/>
           </Model>
         }
         { route === 'home'
