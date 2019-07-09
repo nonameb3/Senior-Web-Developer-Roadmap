@@ -47,15 +47,33 @@ class App extends Component {
     this.state = initialState;
   }
 
+  componentDidMount() {
+    const token = window.sessionStorage.getItem('token');
+    const userId = window.sessionStorage.getItem('userId');
+    if(!token) {
+      return;
+    }
+
+    fetch(`http://localhost:3000/profile/${userId}`, {
+      method: 'get',
+      headers: {'Content-Type': 'application/json'},
+      authorization: token
+    })
+      .then(response => response.json())
+      .then(user => {
+        this.loadUser(user)
+        this.onRouteChange('home');
+      })
+  }
+
   loadUser = (data) => {
-    console.log('data', data)
     this.setState({user: {
-      id: data.user.id,
-      name: data.user.name,
-      email: data.user.email,
-      entries: data.user.entries,
-      joined: data.user.joined
-    }},()=>console.log('fn'))
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    }})
   }
 
   calculateFaceLocation = (data) => {
@@ -127,8 +145,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.user)
-
     const { isSignedIn, imageUrl, route, box, isProfileOpen } = this.state;
     return (
       <div className="App">
