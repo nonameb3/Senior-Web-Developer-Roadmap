@@ -10,7 +10,10 @@ export default function Profile(props) {
   const onProfileUpdate = data => {
     fetch(`http://localhost:3000/profile/${user.id}`, {
         method: 'post',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': window.sessionStorage.getItem('token')
+        },
         body: JSON.stringify({
           formInput:{...user, ...data}
         })
